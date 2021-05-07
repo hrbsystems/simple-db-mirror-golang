@@ -1,0 +1,30 @@
+FROM oraclelinux:7-slim
+
+RUN  yum -y install oracle-instantclient-release-el7 && \
+     yum -y install oracle-instantclient-basic oracle-instantclient-devel oracle-instantclient-sqlplus && \
+     yum -y install gcc && \
+     yum -y install git && \
+     rm -rf /var/cache/yum
+
+# put orcale instant client in PATH 
+ENV PATH=$PATH:/usr/lib/oracle/21/client64/bin
+
+# Install golang 1.16.3 in /usr/local/go
+RUN curl -O https://storage.googleapis.com/golang/go1.16.3.linux-amd64.tar.gz && \
+    echo "951a3c7c6ce4e56ad883f97d9db74d3d6d80d5fec77455c6ada6c1f7ac4776d2  go1.16.3.linux-amd64.tar.gz" | sha256sum --check --status && \
+    tar -C /usr/local/ -xzf go1.16.3.linux-amd64.tar.gz && \
+    rm go1.16.3.linux-amd64.tar.gz 
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+RUN useradd -ms /bin/bash app-user
+WORKDIR /home/app-user
+ENV GOPATH="/home/app-user"
+USER app-user
+ENV USER="app-user"
+
+RUN go get github.com/godror/godror
+
+WORKDIR /home/app-user/src
+
+CMD ["go", "run", "main.go"]
+
