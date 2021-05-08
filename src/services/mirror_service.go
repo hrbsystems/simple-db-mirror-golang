@@ -1,6 +1,8 @@
 package services
 
-import "time"
+import (
+	"time"
+)
 
 var (
 	MirrorService mirrorServiceInterface = &mirrorService{}
@@ -14,6 +16,8 @@ type mirrorServiceInterface interface {
 	Activate() (*string, error)
 	Deactivate() (*string, error)
 	GetLogs(date time.Time) (*string, error)
+	Status() (*string, error)
+	Execute() (*string, error)
 }
 
 func (m *mirrorService) GetConfig() (*string, error) {
@@ -33,5 +37,15 @@ func (m *mirrorService) Deactivate() (*string, error) {
 
 func (m *mirrorService) GetLogs(d time.Time) (*string, error) {
 	resp := "mirror logs of "
+	return &resp, nil
+}
+
+func (m *mirrorService) Execute() (*string, error) {
+	resp := "database mirror started at: "
+	return &resp, nil
+}
+
+func (m *mirrorService) Status() (*string, error) {
+	resp := "database mirror status info"
 	return &resp, nil
 }
